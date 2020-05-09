@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Name=(props)=> <span className='user-name'> {props.name}</span>;
+const Name=(props)=> <span className='user-name'> {props.secondname}</span>;
 
 
 export default Name;
