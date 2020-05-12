@@ -6,12 +6,12 @@ import React from 'react';
 class Animal extends React.Component{
 constructor(props){
     super(props);
-
     this.state = {
         age: props.age,
         inputText: ''
     };
 }
+
 
 handleClick=( num)=>{
     console.log('num', num)
@@ -23,18 +23,19 @@ handleInputChange = (event)=>{
 };
 
 render(){
-
+console.log('render')
     return (
         <div
         // onClick = {this.handleClick.bind(this)}
         // onClick = {this.handleClick}
-        onClick = {(event)=>this.handleClick(event, 2)}
-        >Hello, I am Doggy, and I am a {this.props.type}
+        // onClick = {(event)=>this.handleClick(event, 2)}
+        >
+{/*         Hello, I am Doggy, and I am a {this.props.type}
         <p>I am {this.state.age} years old</p>
         <input type="text" 
         onChange={this.handleInputChange}
         />
-        <p>{this.state.inputText}</p>
+        <p>{this.state.inputText}</p> */}
         </div>
     );
 }
