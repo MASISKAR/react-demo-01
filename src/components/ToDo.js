@@ -1,53 +1,59 @@
 import React, { Component } from 'react';
 import { idGen } from '../utils';
 import Task from './Task';
+import NewTask from './NewTask';
 
 class ToDo extends Component {
     state = {
-        inputText: '',
         tasks: []
     }
 
-    inputChangeHandler = (event) => {
-        const value = event.target.value;
-        this.setState({
-            inputText: value,
-        });
-    }
 
-    buttonClickHandler = () => {
-        const inputText = this.state.inputText;
-
-        if (!inputText) return;
-
+    addTask = (inputText) => {
         const tasks = [...this.state.tasks];
         tasks.push({
             id: idGen(),
             text: inputText
         });
-        this.setState({ tasks, inputText: '' });
+        this.setState({ tasks });
+    }
 
-        // this.setState({ tasks: [...this.state.tasks, inputText], inputText: '' });
+    removeButtonHandler = (taskId)=> ()=> {
+        console.log(taskId);
+       const newTasks = this.state.tasks.filter(({id}) => taskId !== id);
+        this.setState({
+            tasks: newTasks
+        });
     }
 
 
-
     render() {
-/*         const tasks = this.state.tasks
-            .map(task => <Task key={task.id} text={task.text} />); */
-            const tasks = this.state.tasks
-            .map(task => <p key={task.id} >{task.text}</p>);
+        /*         const tasks = this.state.tasks
+                    .map(task => <Task key={task.id} text={task.text} />); */
+        const tasks = this.state.tasks
+            .map(({id, text}) => {
+                return (
+                    <Task 
+                    key={id}
+                    text={text}
+                    onDelete = {this.removeButtonHandler(id)}
+                     />
+
+/*                     <div key={task.id}>
+                        <span>{task.text} </span>
+                        <button onClick={this.removeButtonHandler(task.id)}>X</button>
+                    </div> */
+                )
+            }
+
+            );
 
         return (
             <>
                 <div>
-                    <input
-                        value={this.state.inputText}
-                        type="text"
-                        onChange={this.inputChangeHandler}
-                    />
-
-                    <button onClick={this.buttonClickHandler}>Add</button>
+                <NewTask 
+                onTaskAdd = {this.addTask}
+                />
                 </div>
                 <div>
                     {tasks}
