@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { idGen } from '../utils';
-import Task from './Task';
+import Task from './Task/Task';
 import NewTask from './NewTask';
 
 class ToDo extends Component {

@@ -1,5 +1,7 @@
 import React  from 'react';
-import './task.css';
+import classes from './task.css';
+
+console.log('classes',classes)
 
 export default function Task(props){
 const {text} = props;
@@ -10,7 +12,7 @@ const spanStyle = {
 };
 
     return (
-        <div className = 'task-block'>
+        <div className = {classes.taskBlock}>
         <input 
         type="checkbox"
         onChange = {props.onCheck}
