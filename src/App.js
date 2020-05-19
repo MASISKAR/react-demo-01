@@ -5,7 +5,7 @@ import './App.css';
 // import greet, {idGen as idGenerator, Hello, getThis} from './tools';
 // import * as newObj from './tools';
 import ToDo from './components/ToDo';
-import Counter from './components/Counter';
+// import Counter from './components/Counter';
 // import Animal from './components/Animal';
 // import Input from './components/Input';
 // newObj.getThis();
@@ -17,11 +17,13 @@ import Counter from './components/Counter';
 function App() {
 
   return (
-    <div className='App'>
-
+    <div className={'App'}>
+{/* <img src={logo} alt=""/>
+<img src={require('./logo.svg')} alt=""/>
+ */}
     {/* <Input/> */}
 <ToDo/>
-<Counter/>
+{/* <Counter/> */}
     </div>
   );
 }
