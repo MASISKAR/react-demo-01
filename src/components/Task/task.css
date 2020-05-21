@@ -10,3 +10,11 @@
 .taskBlock > input{
 
 }
+
+.block {
+    color: red;
+}
+
+.text {
+    font-size: 15px;
+}
