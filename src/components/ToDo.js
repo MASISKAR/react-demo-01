@@ -65,6 +65,18 @@ class ToDo extends Component {
 
     }
 
+    handleEdit = (id)=> (text)=>{
+        const tasks = JSON.parse(JSON.stringify(this.state.tasks));
+
+        for(let task of tasks){
+            if(task.id === id){
+                task.text = text;
+                break;
+            }
+        }
+        this.setState({ tasks });
+    }
+
     render() {
         console.log('ToDo render');
     
@@ -78,6 +90,7 @@ class ToDo extends Component {
                     text={text}
                     onDelete = {this.removeButtonHandler(id)}
                     onCheck = {this.handleCheck(id)}
+                    onEdit = {this.handleEdit(id)}
                      />
 
 /*                     <div key={task.id}>
