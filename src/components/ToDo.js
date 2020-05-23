@@ -4,10 +4,18 @@ import Task from './Task/Task';
 import NewTask from './NewTask';
 
 class ToDo extends Component {
+    constructor(props){
+        super(props);
+        console.log('ToDo constructor');
+    }
     state = {
         tasks: [],
         taskIds : new Set()
     }
+
+    componentDidMount(){
+        console.log('ToDo mounted');
+      }
 
 
     addTask = (inputText) => {
@@ -58,6 +66,7 @@ class ToDo extends Component {
     }
 
     render() {
+        console.log('ToDo render');
     
         /*         const tasks = this.state.tasks
                     .map(task => <Task key={task.id} text={task.text} />); */
