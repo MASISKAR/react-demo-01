@@ -1,6 +1,9 @@
 import React from 'react';
 // import logo from './logo.svg';
-import classes from './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import classes from './App.module.css';
+import './index.css';
+import lessClasses from './components/style.less';
 // import Person from './components/Person';
 // import greet, {idGen as idGenerator, Hello, getThis} from './tools';
 // import * as newObj from './tools';
@@ -12,7 +15,7 @@ import ToDo from './components/ToDo';
 // getThis();
 import Div from './components/HOC/Div';
 
-
+console.log('classes', classes);
 
 class App extends React.Component{
   constructor(props){
@@ -53,7 +56,9 @@ Click me and see the magic!</button>
 </Div>
 
 <ToDo/>
+<div className={lessClasses.block}>dfgdfgdf</div>
 
+<div className="but">but</div>
     </div>
   );
 

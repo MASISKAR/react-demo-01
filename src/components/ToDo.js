@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { idGen } from '../utils';
-import Task from './Task/Task';
+import Task from './Task';
 import NewTask from './NewTask';
 
 class ToDo extends Component {
@@ -10,7 +10,8 @@ class ToDo extends Component {
     }
     state = {
         tasks: [],
-        taskIds : new Set()
+        taskIds : new Set(),
+        isEditing: false
     }
 
     componentDidMount(){
@@ -65,7 +66,7 @@ class ToDo extends Component {
 
     }
 
-    handleEdit = (id)=> (text)=>{
+    handleSaveEdit = (id)=> (text)=>{
         const tasks = JSON.parse(JSON.stringify(this.state.tasks));
 
         for(let task of tasks){
@@ -74,7 +75,13 @@ class ToDo extends Component {
                 break;
             }
         }
-        this.setState({ tasks });
+        this.setState({ tasks,  isEditing: false});
+    }
+
+    handleEdit = ()=>{
+        this.setState({
+            isEditing: !this.state.isEditing,
+        });
     }
 
     render() {
@@ -90,7 +97,8 @@ class ToDo extends Component {
                     text={text}
                     onDelete = {this.removeButtonHandler(id)}
                     onCheck = {this.handleCheck(id)}
-                    onEdit = {this.handleEdit(id)}
+                    onSaveEdit = {this.handleSaveEdit(id)}
+                    onEdit = {this.handleEdit}
                      />
 
 /*                     <div key={task.id}>
@@ -107,6 +115,7 @@ class ToDo extends Component {
                 <div>
                 <NewTask 
                 onTaskAdd = {this.addTask}
+                disabled = {this.state.isEditing}
                 />
                 </div>
                 <div>

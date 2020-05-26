@@ -432,15 +432,16 @@ module.exports = function(webpackEnv) {
               use: getStyleLoaders({
                 importLoaders: 1,
                 sourceMap: isEnvProduction && shouldUseSourceMap,
-                modules: {
-                  localIdentName: '[name]_[local]_[hash:base64:5]'
-                },
               }),
               // Don't consider CSS imports dead code even if the
               // containing package claims to have no side effects.
               // Remove this when webpack adds a warning or an error for this.
               // See https://github.com/webpack/webpack/issues/6571
               sideEffects: true,
+            },
+            {
+              test: /\.less$/,
+              loader: 'less-loader', // compiles Less to CSS
             },
             // Adds support for CSS Modules (https://github.com/css-modules/css-modules)
             // using the extension .module.css

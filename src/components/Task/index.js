@@ -1,7 +1,7 @@
 import React  from 'react';
-import classes from './task.css';
+import classes from './style.css';
 
-export default class Task extends React.Component{
+export default class Task extends React.PureComponent{
     constructor(props){
         super(props);
         console.log('Task constructor');
@@ -10,8 +10,6 @@ export default class Task extends React.Component{
           editText: props.text
         }
     }
-
-
 
 
     componentDidMount(){
@@ -24,7 +22,7 @@ export default class Task extends React.Component{
         // console.log('this.props', this.props);
       }
 
- /*      shouldComponentUpdate(prevProps, prevState){
+ /*       shouldComponentUpdate(prevProps, prevState){
        return prevProps.text !== this.props.text;
        
       } */
@@ -37,6 +35,7 @@ export default class Task extends React.Component{
         this.setState({
           isEdit: true
         });
+        this.props.onEdit();
       }
 
       cancelEdit = ()=> {
@@ -44,6 +43,7 @@ export default class Task extends React.Component{
           isEdit: false,
           editText: this.props.text
         });
+        this.props.onEdit();
       }
 
       handleInputChange = (event)=>{
@@ -53,10 +53,11 @@ export default class Task extends React.Component{
       }
 
       saveEdit = ()=>{
-        this.props.onEdit(this.state.editText);
+        this.props.onSaveEdit(this.state.editText);
         this.setState({
           isEdit: false
         });
+        
       }
 
    render(){

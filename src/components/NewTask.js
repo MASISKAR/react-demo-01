@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Button from 'react-bootstrap/Button';
 
 class NewTask extends Component {
 state = {
@@ -18,14 +19,22 @@ this.setState({inputText: ''});
 }
 
     render() {
+        const {disabled} = this.props;
         return (
             <>
                 <input
+                    disabled = {disabled}
                     value={this.state.inputText}
                     type="text"
                     onChange={this.inputChangeHandler}
                 />
-                <button onClick={this.buttonClickHandler}>Add</button>
+                <button
+                disabled = {disabled}
+                 onClick={this.buttonClickHandler}
+                 >
+                 
+                 Add</button>
+                 <Button variant="primary">Primary</Button>
             </>
         );
     }
