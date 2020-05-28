@@ -1,5 +1,9 @@
 import React  from 'react';
 import classes from './style.css';
+import {Card, Button} from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {faTrashAlt} from '@fortawesome/free-solid-svg-icons';
+
 
 export default class Task extends React.PureComponent{
     constructor(props){
@@ -71,6 +75,26 @@ export default class Task extends React.PureComponent{
     };
     
         return (
+<>
+
+<Card>
+  <Card.Header>Featured</Card.Header>
+  <Card.Body>
+    <Card.Title>Special title treatment</Card.Title>
+    <Card.Text>
+      With supporting text below as a natural lead-in to additional content.
+    </Card.Text>
+    <FontAwesomeIcon icon={faTrashAlt} />
+    <Button variant="primary">Go somewhere</Button>
+  </Card.Body>
+</Card>
+
+
+
+
+
+
+
             <div className = {classes.taskBlock}>
             <input 
             type="checkbox"
@@ -95,6 +119,8 @@ export default class Task extends React.PureComponent{
             }
 
         </div>
+
+        </>
         );
    }
 }

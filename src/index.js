@@ -1,40 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import App from './App';
-// import greeting, {idGen as func, hello} from './tools';
-// import * as tools from './tools';
 
 import * as serviceWorker from './serviceWorker';
 
-
-// console.log('tools', tools.hello());
-
-
-// console.log(func());
-// console.log(hello());
-// console.log(greeting);
-
-// const user = {
-//   name: 'John',
-//   age: 20
-// };
-
-// let {name, age} = user;
-
-
-
-/* ReactDOM.render(
+ ReactDOM.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>,
   document.getElementById('root')
-); */
+); 
 
-ReactDOM.render(
+/* ReactDOM.render(
     <App />,
   document.getElementById('root')
-);
+); */
 
 
 
