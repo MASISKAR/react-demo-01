@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import classes from './todo.module.css';
 import { idGen } from '../../helpers/utils';
-import Task from '../Task';
+import Task from '../Task/Task';
 import NewTask from '../NewTask/NewTask';
 import {
     Container,
@@ -9,6 +9,7 @@ import {
     Col,
     Button
 } from 'react-bootstrap';
+import TaskModal from '../TaskModal/TaskModal';
 
 
 class ToDo extends Component {
@@ -19,7 +20,9 @@ class ToDo extends Component {
     state = {
         tasks: [],
         taskIds: new Set(),
-        isEditing: false
+        isEditing: false,
+        openModal: false,
+        currentTask: null
     }
 
     componentDidMount() {
@@ -92,21 +95,45 @@ class ToDo extends Component {
         });
     }
 
-    render() {
-        console.log('ToDo render');
+    selectAllHandler = ()=>{
+        const taskIds = this.state.tasks.map(task => task.id);
+        this.setState({taskIds: new Set(taskIds)});
+    };
 
-        /*         const tasks = this.state.tasks
-                    .map(task => <Task key={task.id} text={task.text} />); */
-        const tasks = this.state.tasks
-            .map(({ id, text }) => {
+    deSelectAllHandler = ()=>{
+        this.setState({taskIds: new Set()});
+    };
+
+    handleModalClose = ()=>{
+        this.setState({
+            openModal: false,
+            currentTask: null
+        });
+    }
+
+    handleModalOpen  = (task)=> ()=> {
+        console.log(task)
+        this.setState({
+            openModal: true,
+            currentTask: task
+        });
+    }
+
+    render() {
+        // console.log('ToDo render');
+      const {tasks, taskIds, isEditing, currentTask} = this.state;
+
+        const tasksArr = tasks.map((task) => {
                 return (
-                    <Col key={id} sm='6' md='4' lg='3' xl='2' >
+                    <Col key={task.id} sm='6' md='4' lg='3' xl='2' >
                         <Task
-                            text={text}
-                            onDelete={this.removeButtonHandler(id)}
-                            onCheck={this.handleCheck(id)}
-                            onSaveEdit={this.handleSaveEdit(id)}
+                            text={task.text}
+                            onDelete={this.removeButtonHandler(task.id)}
+                            onCheck={this.handleCheck(task.id)}
+                            onSaveEdit={this.handleSaveEdit(task.id)}
                             onEdit={this.handleEdit}
+                            isSelected = {this.state.taskIds.has(task.id)}
+                            onOpenModal = {this.handleModalOpen(task)}
                         />
                     </Col>
                 )
@@ -154,28 +181,59 @@ class ToDo extends Component {
                         <Col>
                             <NewTask
                                 onTaskAdd={this.addTask}
-                                disabled={this.state.isEditing}
+                                disabled={isEditing}
                             />
                         </Col>
                     </Row>
 
 
                     <Row>
-                        {tasks}
+                        {tasksArr}
                     </Row>
 
                     <Row>
-                    <Button
-                    className='mx-auto'
-                    variant='danger'
-                    onClick={this.removeBulkHandler}
-                    disabled={!this.state.taskIds.size}
-                >
-                    Remove
-                </Button>
+                        <Button
+                            className='mx-auto'
+                            variant='danger'
+                            onClick={this.removeBulkHandler}
+                            disabled={!taskIds.size}
+                        >
+                            Remove
+                         </Button>
+                        {
+                            tasks.length !== taskIds.size &&
+                            <Button
+                            className='mx-auto'
+                            variant='secondary'
+                            onClick={this.selectAllHandler}
+                        >
+                            Select all
+                         </Button>
+                         
+                        }
+
+                        { !!taskIds.size &&
+                            <Button
+                            className='mx-auto'
+                            variant='secondary'
+                            onClick={this.deSelectAllHandler}
+                        >
+                            Deselect all
+                         </Button>
+                        }
+
+      
+
                     </Row>
                 </Container>
-                </>
+             { currentTask &&  
+                <TaskModal
+                show = {this.state.openModal}
+                onHide = {this.handleModalClose}
+                taskData = {currentTask}
+                />
+            }
+            </>
         );
     }
 }
