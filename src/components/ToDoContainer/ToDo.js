@@ -21,8 +21,7 @@ class ToDo extends Component {
         tasks: [],
         taskIds: new Set(),
         isEditing: false,
-        openModal: false,
-        currentTask: null
+        taskIndex: null
     }
 
     componentDidMount() {
@@ -40,13 +39,15 @@ class ToDo extends Component {
     }
 
     removeButtonHandler = (taskId) => () => {
+    
         const newTasks = this.state.tasks.filter(({ id }) => taskId !== id);
         const newTaskIds = new Set(this.state.taskIds);
         newTaskIds.delete(taskId);
 
         this.setState({
             tasks: newTasks,
-            taskIds: newTaskIds
+            taskIds: newTaskIds,
+            taskIndex: null
         });
     }
 
@@ -106,24 +107,21 @@ class ToDo extends Component {
 
     handleModalClose = ()=>{
         this.setState({
-            openModal: false,
-            currentTask: null
+            taskIndex: null
         });
     }
 
-    handleModalOpen  = (task)=> ()=> {
-        console.log(task)
+    handleModalOpen  = (taskIndex)=> ()=> {
         this.setState({
-            openModal: true,
-            currentTask: task
+            taskIndex: taskIndex
         });
     }
 
     render() {
         // console.log('ToDo render');
-      const {tasks, taskIds, isEditing, currentTask} = this.state;
+      const {tasks, taskIds, isEditing, taskIndex} = this.state;
 
-        const tasksArr = tasks.map((task) => {
+        const tasksArr = tasks.map((task, index) => {
                 return (
                     <Col key={task.id} sm='6' md='4' lg='3' xl='2' >
                         <Task
@@ -133,7 +131,7 @@ class ToDo extends Component {
                             onSaveEdit={this.handleSaveEdit(task.id)}
                             onEdit={this.handleEdit}
                             isSelected = {this.state.taskIds.has(task.id)}
-                            onOpenModal = {this.handleModalOpen(task)}
+                            onOpenModal = {this.handleModalOpen(index)}
                         />
                     </Col>
                 )
@@ -226,11 +224,14 @@ class ToDo extends Component {
 
                     </Row>
                 </Container>
-             { currentTask &&  
+             { taskIndex !== null &&  
                 <TaskModal
-                show = {this.state.openModal}
+                show = {taskIndex !== null}
                 onHide = {this.handleModalClose}
-                taskData = {currentTask}
+                taskData = {tasks[taskIndex]}
+               onDelete={this.removeButtonHandler(tasks[taskIndex].id)} 
+                onSaveEdit={this.handleSaveEdit(tasks[taskIndex].id)}
+                onEdit={this.handleEdit}
                 />
             }
             </>
