@@ -1,7 +1,7 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-
+// import Request from './Demo/Request';
 import ToDo from './components/ToDoContainer/ToDo';
 
 class App extends React.Component{
@@ -29,10 +29,8 @@ console.log('App render starts');
   return (
     <div className={'App'}>
     <ToDo/>
-{/* <button
-onClick = {this.handleClick}
->
-Click me and see the magic!</button> */}
+
+    {/* <Request/> */}
     </div>
   );
 

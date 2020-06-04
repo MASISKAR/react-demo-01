@@ -7,7 +7,7 @@ import EditTask from '../EditTask';
 export default class Task extends React.PureComponent {
   constructor(props) {
     super(props);
-    console.log('Task constructor');
+    // console.log('Task constructor');
     this.state = {
       isEdit: false
     }
@@ -15,23 +15,23 @@ export default class Task extends React.PureComponent {
 
 
   componentDidMount() {
-    console.log('Task mounted');
+    // console.log('Task mounted');
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    console.log('Task updated');
+/*   componentDidUpdate(prevProps, prevState) {
+    // console.log('Task updated');
     // console.log('prevProps', prevProps);
     // console.log('this.props', this.props);
-  }
+  } */
 
   /*       shouldComponentUpdate(prevProps, prevState){
         return prevProps.text !== this.props.text;
         
        } */
 
-  componentWillUnmount() {
+ /*  componentWillUnmount() {
     console.log('Task unmounted');
-  }
+  } */
 
   handleEdit = () => {
     this.setState({
@@ -56,7 +56,7 @@ export default class Task extends React.PureComponent {
 
   render() {
     // console.log('Task render');
-    const { text } = this.props;
+    const { data } = this.props;
     const { isEdit } = this.state;
 
     return (
@@ -69,9 +69,9 @@ export default class Task extends React.PureComponent {
           />
         </Card.Header>
         <Card.Body>
-          <Card.Title>{text.slice(0, 10)}</Card.Title>
+          <Card.Title>{data.title}</Card.Title>
           <Card.Text>
-            {text}
+            {data.description}
           </Card.Text>
           {
             isEdit ?
