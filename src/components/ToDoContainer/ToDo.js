@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import classes from './todo.module.css';
-import { idGen } from '../../helpers/utils';
+// import { idGen } from '../../helpers/utils';
 import Task from '../Task/Task';
 import NewTask from '../NewTask/NewTask';
+import { withSnackbar } from 'notistack';
+
 import {
     Container,
     Row,
@@ -10,19 +12,20 @@ import {
     Button
 } from 'react-bootstrap';
 import TaskModal from '../TaskModal/TaskModal';
-
+import AddTaskModal from '../AddTaskModal';
 
 class ToDo extends Component {
- /*    constructor(props) {
-        super(props);
+    constructor(ppp) {
+        super(ppp);
         console.log('ToDo constructor');
-    } */
+    }
 
     state = {
         tasks: [],
         taskIds: new Set(),
         isEditing: false,
-        taskIndex: null
+        taskIndex: null,
+        showTaskModal: false
     }
 
     componentDidMount() {
@@ -31,36 +34,46 @@ class ToDo extends Component {
         })
             .then(res => res.json())
             .then(data => {
+                if(data.error){
+                    throw data.error;
+                }
                 this.setState({ tasks: data });
             })
             .catch(error => {
-                console.log('error', error);
+                this.props.enqueueSnackbar(error.toString(), { 
+                    variant: 'error',
+                });
             });
     }
 
 
-    addTask = (inputText) => {
-        const data = {
-            title: inputText.slice(0, 5),
-            description: inputText,
-        }
-
+    addTask = (taskData) => {
         fetch('http://localhost:3001/tasks', {
             method: 'POST',
-            body: JSON.stringify(data),
+            body: JSON.stringify(taskData),
             headers: {
                 'Content-Type': 'application/json'
             }
         })
-        .then(res => res.json())
-        .then(data => {
-            this.setState({ tasks: [...this.state.tasks, data] });
-        })
-        .catch(error => {
-            console.log('error', error);
-        });
+            .then(res => res.json())
+            .then(response => {
+                if(response.error){
+                    throw response.error;
+                }
+                this.props.enqueueSnackbar('Task added successfully', { 
+                    variant: 'success',
+                });
 
-        /*       */
+                this.setState({
+                    tasks: [...this.state.tasks, response],
+                    showTaskModal: false
+                });
+            })
+            .catch(error => {
+                this.props.enqueueSnackbar(error.toString(), { 
+                    variant: 'error',
+                });
+            });
     }
 
     removeButtonHandler = (taskId) => () => {
@@ -88,7 +101,7 @@ class ToDo extends Component {
     }
 
 
-    removeBulkHandler = () => {
+    removeBulkHandler = (ev) => {
         let { tasks, taskIds } = this.state;
 
         taskIds.forEach(id => {
@@ -141,8 +154,12 @@ class ToDo extends Component {
         });
     }
 
+    toggleAddTaskModal = () => {
+        this.setState({ showTaskModal: !this.state.showTaskModal });
+    };
+
     render() {
-        // console.log('ToDo render');
+        console.log(this.props);
         const { tasks, taskIds, isEditing, taskIndex } = this.state;
 
         const tasksArr = tasks.map((task, index) => {
@@ -165,42 +182,16 @@ class ToDo extends Component {
 
         return (
             <>
-                {              /*   <Container fluid>
-                    <Row>
-                        <Col sm='6' md='4' lg='3' xl='2' className={classes.col}>
-                        <div className = {classes.block} ></div>
-                        </Col>
-                        <Col sm={{span: 4, offset: 4}} md='4' lg='3' xl='2' className={classes.col}>
-                        <div className = {classes.block} ></div>
-                        </Col>
-                        <Col sm='6' md='4' lg='3' xl='2' className={classes.col}>
-                        <div className = {classes.block} ></div>
-                        </Col>
-                        <Col sm='6' md='4' lg='3' xl='2' className={classes.col}>
-                        <div className = {classes.block} ></div>
-                        </Col>
-                        <Col sm='6' md='4' lg='3' xl='2' className={classes.col}>
-                        <div className = {classes.block} ></div>
-                        </Col>
-                        <Col sm='6' md='4' lg='3' xl='2' className={classes.col}>
-                        <div className = {classes.block} ></div>
-                        </Col>
-                    </Row>
-
-                    <Row>
-                    <Col className={classes.col}>7</Col>
-                    <Col className={classes.col}>8</Col>
-                    <Col className={classes.col}>9</Col>
-                    <Col className={classes.col}>10</Col>
-                    </Row>
-
-
-                </Container>
- */}
-
                 <Container>
                     <Row className={classes.inputRow}>
                         <Col>
+                            <Button
+                                className='mx-auto'
+                                variant='primary'
+                                onClick={this.toggleAddTaskModal}
+                            >
+                                Add task
+                    </Button>
                             <NewTask
                                 onTaskAdd={this.addTask}
                                 disabled={isEditing}
@@ -258,9 +249,16 @@ class ToDo extends Component {
                         onEdit={this.handleEdit}
                     />
                 }
+
+                <AddTaskModal
+                    open={this.state.showTaskModal}
+                    onHide={this.toggleAddTaskModal}
+                    onAddTask={this.addTask}
+                />
+     
             </>
         );
     }
 }
 
-export default ToDo;
+export default withSnackbar(ToDo);

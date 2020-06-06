@@ -24,7 +24,7 @@ handleClick = ()=>{
 }
 
   render(){
-console.log('App render starts');
+console.log('App render starts', this.props);
 
   return (
     <div className={'App'}>
