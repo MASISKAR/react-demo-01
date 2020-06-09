@@ -12,20 +12,18 @@ import {
     Button
 } from 'react-bootstrap';
 import TaskModal from '../TaskModal/TaskModal';
-import AddTaskModal from '../AddTaskModal';
+import Modal from '../Modal';
 
 class ToDo extends Component {
-    constructor(ppp) {
-        super(ppp);
-        console.log('ToDo constructor');
-    }
 
     state = {
         tasks: [],
         taskIds: new Set(),
         isEditing: false,
         taskIndex: null,
-        showTaskModal: false
+        editTaskIndex: null,
+        showAddTaskModal: false,
+        showEditTaskModal: false
     }
 
     componentDidMount() {
@@ -33,7 +31,7 @@ class ToDo extends Component {
             method: 'GET',
         })
             .then(res => res.json())
-            .then(data => {
+            .then((data)=>{
                 if(data.error){
                     throw data.error;
                 }
@@ -63,10 +61,9 @@ class ToDo extends Component {
                 this.props.enqueueSnackbar('Task added successfully', { 
                     variant: 'success',
                 });
-
                 this.setState({
                     tasks: [...this.state.tasks, response],
-                    showTaskModal: false
+                    showAddTaskModal: false
                 });
             })
             .catch(error => {
@@ -77,6 +74,39 @@ class ToDo extends Component {
     }
 
     removeButtonHandler = (taskId) => () => {
+        fetch(`http://localhost:3001/tasks/${taskId}`, {
+            method: 'Delete',
+        })
+        .then(res => res.json())
+        .then(response => {
+            if(response.error){
+                throw response.error;
+            }
+            if(response.success){
+                this.props.enqueueSnackbar('Task edited successfully', { 
+                    variant: 'success',
+                });
+            }
+            else {
+                throw new Error('Something went wrong, please, try again later!');
+            }
+            
+
+            const tasks = [...this.state.tasks];
+            const taskIndex = tasks.findIndex(task => task.id === response.id);
+            tasks[taskIndex] = response;
+            this.setState({
+                tasks,
+                showEditTaskModal: false
+            });
+        })
+        .catch(error => {
+            this.props.enqueueSnackbar(error.toString(), { 
+                variant: 'error',
+            });
+        });
+
+
         const newTasks = this.state.tasks.filter(({ id }) => taskId !== id);
         const newTaskIds = new Set(this.state.taskIds);
         newTaskIds.delete(taskId);
@@ -127,9 +157,10 @@ class ToDo extends Component {
         this.setState({ tasks, isEditing: false });
     }
 
-    handleEdit = () => {
+    handleEdit = (taskId) => {
         this.setState({
-            isEditing: !this.state.isEditing,
+            showEditTaskModal: true,
+            editTaskIndex: this.state.tasks.findIndex(el=> el.id === taskId),
         });
     }
 
@@ -149,17 +180,50 @@ class ToDo extends Component {
     }
 
     handleModalOpen = (taskIndex) => () => {
+        console.log(taskIndex)
         this.setState({
             taskIndex: taskIndex
         });
     }
 
-    toggleAddTaskModal = () => {
-        this.setState({ showTaskModal: !this.state.showTaskModal });
+    toggleTaskModal = (type)=>() => {
+        console.log(`show${type}TaskModal`);
+        this.setState({ [`show${type}TaskModal`]: !this.state[`show${type}TaskModal`] });
+    };
+
+    editTask = (taskId, taskData)=>{
+        fetch(`http://localhost:3001/tasks/${taskId}`, {
+            method: 'PUT',
+            body: JSON.stringify(taskData),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(res => res.json())
+        .then(response => {
+            if(response.error){
+                throw response.error;
+            }
+            this.props.enqueueSnackbar('Task edited successfully', { 
+                variant: 'success',
+            });
+
+            const tasks = [...this.state.tasks];
+            const taskIndex = tasks.findIndex(task => task.id === response.id);
+            tasks[taskIndex] = response;
+            this.setState({
+                tasks,
+                showEditTaskModal: false
+            });
+        })
+        .catch(error => {
+            this.props.enqueueSnackbar(error.toString(), { 
+                variant: 'error',
+            });
+        });
     };
 
     render() {
-        console.log(this.props);
         const { tasks, taskIds, isEditing, taskIndex } = this.state;
 
         const tasksArr = tasks.map((task, index) => {
@@ -250,10 +314,19 @@ class ToDo extends Component {
                     />
                 }
 
-                <AddTaskModal
-                    open={this.state.showTaskModal}
-                    onHide={this.toggleAddTaskModal}
+                <Modal
+                    type = 'add'
+                    open={this.state.showAddTaskModal}
+                    onHide={this.toggleTaskModal('Add')}
                     onAddTask={this.addTask}
+                />
+                <Modal
+                    type = 'edit'
+                    data = {tasks[this.state.editTaskIndex]}
+                    open={this.state.showEditTaskModal}
+                    onHide={this.toggleTaskModal('Edit')}
+                    onAddTask={this.addTask}
+                    onEditTask = {this.editTask}
                 />
      
             </>

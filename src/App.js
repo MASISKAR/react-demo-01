@@ -12,9 +12,9 @@ class App extends React.Component{
     };
 }
 
-componentDidMount(){
-  console.log('App mounted');
-}
+/* componentDidMount(){
+  // console.log('App mounted');
+} */
 
 
 handleClick = ()=>{
@@ -24,7 +24,7 @@ handleClick = ()=>{
 }
 
   render(){
-console.log('App render starts', this.props);
+// console.log('App render starts', this.props);
 
   return (
     <div className={'App'}>

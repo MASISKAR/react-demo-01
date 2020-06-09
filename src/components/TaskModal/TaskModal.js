@@ -48,10 +48,18 @@ render(){
               </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <h4>Centered Modal</h4>
+              <h4>{taskData.title}</h4>
               <p>
-                {taskData.text}
+              {taskData.description}
+            </p>
+              <p>
+              Created {taskData.created_at.slice(0,10)}
               </p>
+              <p>
+                Due date {taskData.date.slice(0,10)}
+              </p>
+          
+
               {
                 this.state.isEdit ?
                 <EditTask

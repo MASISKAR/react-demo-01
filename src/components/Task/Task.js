@@ -33,27 +33,6 @@ export default class Task extends React.PureComponent {
     console.log('Task unmounted');
   } */
 
-  handleEdit = () => {
-    this.setState({
-      isEdit: true
-    });
-    this.props.onEdit();
-  }
-
-  cancelEdit = () => {
-    this.setState({
-      isEdit: false,
-    });
-    this.props.onEdit();
-  }
-
-  saveEdit = (editedText) => {
-    this.props.onSaveEdit(editedText);
-    this.setState({
-      isEdit: false,
-    });
-  }
-
   render() {
     // console.log('Task render');
     const { data } = this.props;
@@ -82,14 +61,15 @@ export default class Task extends React.PureComponent {
             />           
             :
               <>
-                <FontAwesomeIcon icon={faEdit} onClick={this.handleEdit} />
+                <FontAwesomeIcon icon={faEdit} onClick={()=>this.props.onEdit(data.id)} />
                 <FontAwesomeIcon icon={faTrashAlt} onClick={this.props.onDelete} />
                 <p>
                 <Button 
                 variant="primary" 
                 onClick = {this.props.onOpenModal}
                 >
-                View</Button>
+                View
+                </Button>
                 </p>
               </>
           }

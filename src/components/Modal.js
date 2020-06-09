@@ -1,22 +1,25 @@
 import React from 'react';
 import { Modal, Button, InputGroup, FormControl, Form } from 'react-bootstrap';
+import PropTypes from 'prop-types';
 
-
-class AddTaskModal extends React.Component {
+class AddEditModal extends React.Component {
 constructor(props){
     super(props);
-    this.initialState = {
-        title: '',
-        date: '',
-        description: ''
-    };
-
+        this.initialState = {
+            title: '',
+            date: '',
+            description: ''
+        };
+    
     this.state = this.initialState;
 }
 
 componentDidUpdate(prevProps, prevState){
     if(prevProps.open && !this.props.open){
         this.setState(this.initialState);
+    }
+    else if(!prevProps.open && this.props.open){
+        this.setState(this.props.data);
     }
 }
 
@@ -50,8 +53,22 @@ console.log('setInput');
         };
         this.props.onAddTask(taskData);
     }
+
+    editTask = ()=>{
+        const {title, date, description, id} = this.state;
+        const {data} = this.props;
+        const taskData = {};
+
+        (title !== data.title) &&  (taskData.title = title);
+        (date !== data.date) &&  (taskData.date = date);
+        (description !== data.description) &&  (taskData.description = description);
+
+        this.props.onEditTask(id, taskData);
+    }
+
     render() {
 const {title, date, description} = this.state;
+console.log('this.state', this.state)
         return (
             <>
 
@@ -64,7 +81,7 @@ const {title, date, description} = this.state;
                 >
                     <Modal.Header closeButton>
                         <Modal.Title id="contained-modal-title-vcenter">
-                            Add new Task
+                           {this.props.type === 'add' ?  'Add new Task' : 'Edit task'}
               </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
@@ -92,7 +109,7 @@ const {title, date, description} = this.state;
                        <p>
                        <input 
                        type="date"
-                       value={date}
+                       value={date.slice(0, 10)}
                        onChange={this.onChangeHandler('date')}
                        />
                        </p> 
@@ -101,13 +118,22 @@ const {title, date, description} = this.state;
                         
                     </Modal.Body>
                     <Modal.Footer>
+                        {this.props.type === 'add' ?
                         <Button
                             variant="outline-primary"
                             onClick={this.addTask}
                             disabled = {!title}
                         >
                             Add
-                        </Button>
+                        </Button> :
+                        <Button
+                        variant="outline-primary"
+                        onClick={this.editTask}
+                        disabled = {!title}
+                    >
+                        Save
+                    </Button> 
+                }
                         <Button 
                         variant="outline-warning"
                         onClick={this.props.onHide}
@@ -122,4 +148,13 @@ const {title, date, description} = this.state;
 
 }
 
-export default AddTaskModal;
+AddEditModal.propTypes = {
+    type: PropTypes.string.isRequired,
+    open: PropTypes.bool.isRequired,
+    onHide: PropTypes.func.isRequired,
+    onAddTask: PropTypes.func,
+    onEditTask: PropTypes.func
+};
+
+
+export default AddEditModal;
