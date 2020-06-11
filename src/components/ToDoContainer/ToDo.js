@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import classes from './todo.module.css';
 // import { idGen } from '../../helpers/utils';
 import Task from '../Task/Task';
-import NewTask from '../NewTask/NewTask';
+import Search from '../Search/Search';
 import { withSnackbar } from 'notistack';
 
 import {
@@ -223,8 +223,33 @@ class ToDo extends Component {
         });
     };
 
+
+    searchTasks = (data) =>{
+        let query = '';
+
+            for(let key in data){
+                query+= `${key}=${data[key]}&`
+            }
+
+        fetch(`http://localhost:3001/tasks?${query}`, {
+            method: 'GET',
+        })
+            .then(res => res.json())
+            .then((data)=>{
+                if(data.error){
+                    throw data.error;
+                }
+                this.setState({ tasks: data });
+            })
+            .catch(error => {
+                this.props.enqueueSnackbar(error.toString(), { 
+                    variant: 'error',
+                });
+            });
+    };
+
     render() {
-        const { tasks, taskIds, isEditing, taskIndex } = this.state;
+        const { tasks, taskIds, taskIndex } = this.state;
 
         const tasksArr = tasks.map((task, index) => {
             return (
@@ -252,20 +277,22 @@ class ToDo extends Component {
                             <Button
                                 className='mx-auto'
                                 variant='primary'
-                                onClick={this.toggleAddTaskModal}
+                                onClick={this.toggleTaskModal('Add')}
                             >
                                 Add task
                     </Button>
-                            <NewTask
-                                onTaskAdd={this.addTask}
-                                disabled={isEditing}
+                            <Search 
+                            onSubmit = {this.searchTasks}
                             />
                         </Col>
                     </Row>
 
 
                     <Row>
-                        {tasksArr}
+                        {tasksArr.length ? 
+                            tasksArr :
+                            <p>There are no tasks yet!</p>
+                        }
                     </Row>
 
                     <Row>

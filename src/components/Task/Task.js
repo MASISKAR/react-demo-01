@@ -3,6 +3,8 @@ import { Card, Button} from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrashAlt, faEdit} from '@fortawesome/free-solid-svg-icons';
 import EditTask from '../EditTask';
+import {formatDate} from '../../helpers/utils';
+import classes from './style.module.css';
 
 export default class Task extends React.PureComponent {
   constructor(props) {
@@ -49,9 +51,15 @@ export default class Task extends React.PureComponent {
         </Card.Header>
         <Card.Body>
           <Card.Title>{data.title}</Card.Title>
-          <Card.Text>
+          <Card.Text >
             {data.description}
           </Card.Text>
+          <Card.Text className={classes.date}>
+          Creation date {formatDate(data.created_at)}
+        </Card.Text>
+        <Card.Text className={classes.date}>
+        Completion date {formatDate(data.date)}
+      </Card.Text>
           {
             isEdit ?
             <EditTask

@@ -68,7 +68,7 @@ console.log('setInput');
 
     render() {
 const {title, date, description} = this.state;
-console.log('this.state', this.state)
+
         return (
             <>
 
