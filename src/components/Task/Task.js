@@ -5,6 +5,7 @@ import { faTrashAlt, faEdit} from '@fortawesome/free-solid-svg-icons';
 import EditTask from '../EditTask';
 import {formatDate} from '../../helpers/utils';
 import classes from './style.module.css';
+import {Link} from 'react-router-dom';
 
 export default class Task extends React.PureComponent {
   constructor(props) {
@@ -76,8 +77,17 @@ export default class Task extends React.PureComponent {
                 variant="primary" 
                 onClick = {this.props.onOpenModal}
                 >
-                View
+                Open in modal
                 </Button>
+
+                <Link to={`/task/${data.id}`}>
+                <Button 
+                variant="primary"
+                >
+                Open in separate page
+                </Button>
+                </Link>
+
                 </p>
               </>
           }

@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import classes from './todo.module.css';
-// import { idGen } from '../../helpers/utils';
-import Task from '../Task/Task';
-import Search from '../Search/Search';
+import Task from '../../Task/Task';
+import Search from '../../Search/Search';
 import { withSnackbar } from 'notistack';
 
 import {
@@ -11,8 +10,8 @@ import {
     Col,
     Button
 } from 'react-bootstrap';
-import TaskModal from '../TaskModal/TaskModal';
-import Modal from '../Modal';
+import TaskModal from '../../TaskModal/TaskModal';
+import Modal from '../../Modal';
 
 class ToDo extends Component {
 
