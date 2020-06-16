@@ -43,7 +43,7 @@ handleClick = ()=>{
     <Route path='/contact' exact component={Contact}/>
     <Route path='/task/:id' exact component={SingleTask}/>
     <Route path='/404' exact component={NotFound}/>
-    <Redirect to='/404' />
+    {/* <Redirect to='/404' /> */}
     </Switch>
 
     </div>

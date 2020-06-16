@@ -46,7 +46,6 @@ deleteTask = ()=>{
 };
 
     render() {
-        console.log(this.props);
         const {task} = this.state;
         return (
             <>

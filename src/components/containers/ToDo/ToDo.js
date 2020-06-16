@@ -26,26 +26,36 @@ class ToDo extends Component {
     }
 
     componentDidMount() {
-        fetch('http://localhost:3001/tasks', {
-            method: 'GET',
-        })
-            .then(res => res.json())
-            .then((data)=>{
-                if(data.error){
-                    throw data.error;
-                }
-                this.setState({ tasks: data });
-            })
-            .catch(error => {
-                this.props.enqueueSnackbar(error.toString(), { 
-                    variant: 'error',
-                });
-            });
+        this.getTasks();
     }
 
 
+componentDidUpdate(prevProps){
+    if(prevProps.location.search !== this.props.location.search){
+        this.getTasks();
+    } 
+}
+
+getTasks = ()=>{
+    fetch(`http://localhost:3001/tasks${this.props.location.search}`, {
+        method: 'GET',
+    })
+        .then(res => res.json())
+        .then((data)=>{
+            if(data.error){
+                throw data.error;
+            }
+            this.setState({ tasks: data });
+        })
+        .catch(error => {
+            this.props.enqueueSnackbar(error.toString(), { 
+                variant: 'error',
+            });
+        });
+};
+
     addTask = (taskData) => {
-        fetch('http://localhost:3001/tasks', {
+        fetch(`http://localhost:3001/tasks`, {
             method: 'POST',
             body: JSON.stringify(taskData),
             headers: {
@@ -179,14 +189,13 @@ class ToDo extends Component {
     }
 
     handleModalOpen = (taskIndex) => () => {
-        console.log(taskIndex)
+        
         this.setState({
             taskIndex: taskIndex
         });
     }
 
     toggleTaskModal = (type)=>() => {
-        console.log(`show${type}TaskModal`);
         this.setState({ [`show${type}TaskModal`]: !this.state[`show${type}TaskModal`] });
     };
 
@@ -227,10 +236,13 @@ class ToDo extends Component {
         let query = '';
 
             for(let key in data){
-                query+= `${key}=${data[key]}&`
+                if(data[key]){
+                    query+= `${key}=${data[key]}&`
+                } 
             }
-
-        fetch(`http://localhost:3001/tasks?${query}`, {
+            
+            this.props.history.push(`/?${query}`);
+/*         fetch(`http://localhost:3001/tasks?${query}`, {
             method: 'GET',
         })
             .then(res => res.json())
@@ -244,7 +256,7 @@ class ToDo extends Component {
                 this.props.enqueueSnackbar(error.toString(), { 
                     variant: 'error',
                 });
-            });
+            }); */
     };
 
     render() {

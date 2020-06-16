@@ -4,7 +4,6 @@ import {NavLink, withRouter} from 'react-router-dom';
 
 
 function NavMenu(props){
-    console.log('props', props.location.pathname);
     return (
         <nav>
         <ul className={classes.ul}>

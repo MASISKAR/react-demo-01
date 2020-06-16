@@ -77,11 +77,13 @@ class Search extends Component {
     this.setState({ search: event.target.value });
   }
 
-  submitHandler = (type = 'submit') => {
+  submitHandler = (type) => (event)=>{
     if (type === 'reset') {
       this.props.onSubmit({});
+    this.setState(this.defaultState);
     }
-    else {
+ 
+    if((!type && event.key === 'Enter') || type === 'submit'){
       const { sortId, search, filterId, date } = this.state;
       const data = {
         search: search,
@@ -91,10 +93,8 @@ class Search extends Component {
         data[filterId] = date;
       }
       this.props.onSubmit(data);
-    }
-
     this.setState(this.defaultState);
-
+    }
   }
 
   selectHandler = (type, id, title) => () => {
@@ -123,12 +123,13 @@ class Search extends Component {
             aria-describedby="basic-addon2"
             value={search}
             onChange={this.inputChangeHandler}
+            onKeyDown = {this.submitHandler()}
           />
           <InputGroup.Append>
             <Button
               variant="outline-primary"
 
-              onClick={this.submitHandler}
+              onClick={this.submitHandler('submit')}
             >
               Search
               </Button>
@@ -172,7 +173,7 @@ class Search extends Component {
 
         <Button
           variant="outline-secondary"
-          onClick={() => this.submitHandler('reset')}
+          onClick={this.submitHandler('reset')}
         >
           Reset
 </Button>
