@@ -84,7 +84,7 @@ getTasks = ()=>{
 
     removeButtonHandler = (taskId) => () => {
         fetch(`http://localhost:3001/tasks/${taskId}`, {
-            method: 'Delete',
+            method: 'DELETE',
         })
         .then(res => res.json())
         .then(response => {
@@ -140,17 +140,61 @@ getTasks = ()=>{
     }
 
 
-    removeBulkHandler = (ev) => {
-        let { tasks, taskIds } = this.state;
+    removeBulkHandler = () => {
+        const taskIds = [...this.state.taskIds, 'fgsgfsgdhtwa'];
 
-        taskIds.forEach(id => {
+        fetch(`http://localhost:3001/tasks`, {
+            method: 'DELETE',
+            body: JSON.stringify({tasks: taskIds}),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(res => res.json())
+        .then(response => {
+            console.log(response);
+            if(response.error){
+                throw response.error;
+            }
+            if(response.success){
+                this.props.enqueueSnackbar('Task edited successfully', { 
+                    variant: 'success',
+                });
+            }
+            else {
+                throw new Error('Something went wrong, please, try again later!');
+            }
+            
+            let tasks = [...this.state.tasks];
+            taskIds.forEach(id => {
+                tasks = tasks.filter(task => task.id !== id);
+            });
+    
+            this.setState({
+                tasks,
+                taskIds: new Set()
+            }); 
+        })
+        .catch(error => {
+            this.props.enqueueSnackbar(error.toString(), { 
+                variant: 'error',
+            });
+        });
+
+
+
+
+
+console.log('taskIds', taskIds);
+
+/*         taskIds.forEach(id => {
             tasks = tasks.filter(task => task.id !== id);
         });
 
         this.setState({
             tasks,
             taskIds: new Set()
-        });
+        }); */
 
     }
 
