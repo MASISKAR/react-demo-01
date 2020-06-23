@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import classes from './todo.module.css';
 import Task from '../../Task/Task';
 import Search from '../../Search/Search';
-import { withSnackbar } from 'notistack';
 
+import {request} from '../../../helpers/request';
+import getTasks from '../../../store/actions/getTasks';
 import {
     Container,
     Row,
@@ -12,11 +13,11 @@ import {
 } from 'react-bootstrap';
 import TaskModal from '../../TaskModal/TaskModal';
 import Modal from '../../Modal';
+import {connect} from 'react-redux';
 
 class ToDo extends Component {
 
     state = {
-        tasks: [],
         taskIds: new Set(),
         isEditing: false,
         taskIndex: null,
@@ -26,33 +27,16 @@ class ToDo extends Component {
     }
 
     componentDidMount() {
-        this.getTasks();
+        this.props.getTasks();
     }
 
 
 componentDidUpdate(prevProps){
-    if(prevProps.location.search !== this.props.location.search){
-        this.getTasks();
+    const searchStr = this.props.location.search;
+    if(prevProps.location.search !== searchStr){
+        this.props.getTasks(searchStr);
     } 
 }
-
-getTasks = ()=>{
-    fetch(`http://localhost:3001/tasks${this.props.location.search}`, {
-        method: 'GET',
-    })
-        .then(res => res.json())
-        .then((data)=>{
-            if(data.error){
-                throw data.error;
-            }
-            this.setState({ tasks: data });
-        })
-        .catch(error => {
-            this.props.enqueueSnackbar(error.toString(), { 
-                variant: 'error',
-            });
-        });
-};
 
     addTask = (taskData) => {
         fetch(`http://localhost:3001/tasks`, {
@@ -185,7 +169,6 @@ getTasks = ()=>{
 
 
 
-console.log('taskIds', taskIds);
 
 /*         taskIds.forEach(id => {
             tasks = tasks.filter(task => task.id !== id);
@@ -286,25 +269,11 @@ console.log('taskIds', taskIds);
             }
             
             this.props.history.push(`/?${query}`);
-/*         fetch(`http://localhost:3001/tasks?${query}`, {
-            method: 'GET',
-        })
-            .then(res => res.json())
-            .then((data)=>{
-                if(data.error){
-                    throw data.error;
-                }
-                this.setState({ tasks: data });
-            })
-            .catch(error => {
-                this.props.enqueueSnackbar(error.toString(), { 
-                    variant: 'error',
-                });
-            }); */
     };
 
     render() {
-        const { tasks, taskIds, taskIndex } = this.state;
+        const { taskIds, taskIndex } = this.state;
+        const {tasks} = this.props;
 
         const tasksArr = tasks.map((task, index) => {
             return (
@@ -416,4 +385,14 @@ console.log('taskIds', taskIds);
     }
 }
 
-export default withSnackbar(ToDo);
+const mapStateToProps = (state)=> {
+   return {
+       tasks: state.taskReducer.tasks
+   }
+}
+
+const mapDispatchToProps = {
+    getTasks,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ToDo);

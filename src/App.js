@@ -8,8 +8,10 @@ import About from './components/containers/About/About';
 import Contact from './components/containers/Contact/Contact';
 import SingleTask from './components/containers/SingleTask/SingleTask';
 import NotFound from './components/containers/NotFound/NotFound';
-
+import { withSnackbar } from 'notistack';
+import {connect} from 'react-redux';
 import {Route, Switch, Redirect} from 'react-router-dom';
+import Loader from './components/loader/loader';
 
 class App extends React.Component{
   constructor(props){
@@ -19,9 +21,22 @@ class App extends React.Component{
     };
 }
 
-/* componentDidMount(){
-  // console.log('App mounted');
-} */
+ componentDidUpdate(prevProps){
+  if(!prevProps.success && this.props.success){
+    this.props.enqueueSnackbar(this.props.success, { 
+      variant: 'success',
+  });
+  return;
+  }
+
+  if(!prevProps.error && this.props.error){
+    this.props.enqueueSnackbar(this.props.error, { 
+      variant: 'error',
+  });
+  return;
+  }
+
+}
 
 
 handleClick = ()=>{
@@ -43,9 +58,10 @@ handleClick = ()=>{
     <Route path='/contact' exact component={Contact}/>
     <Route path='/task/:id' exact component={SingleTask}/>
     <Route path='/404' exact component={NotFound}/>
-    {/* <Redirect to='/404' /> */}
+    <Redirect to='/404' />
     </Switch>
 
+    {this.props.loading && <Loader/>}
     </div>
   );
 
@@ -53,6 +69,13 @@ handleClick = ()=>{
 
 }
 
-export default App;
+
+export default connect((state)=>{
+ return {
+    error: state.taskReducer.error,
+    success: state.taskReducer.success,
+    loading:  state.taskReducer.loading
+    }
+})(withSnackbar(App));
 
 

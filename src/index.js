@@ -4,15 +4,20 @@ import App from './App';
 import { SnackbarProvider } from 'notistack';
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import {store} from './store';
+
 
 
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter>
+  <Provider store = {store}>
+  <BrowserRouter>
       <SnackbarProvider maxSnack={2}>
         <App />
       </SnackbarProvider>
     </BrowserRouter>
+  </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );
