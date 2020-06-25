@@ -1,6 +1,8 @@
 import React from 'react';
 import { Modal, Button, InputGroup, FormControl, Form } from 'react-bootstrap';
 import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import addTask from '../store/actions/addTask';
 
 class AddEditModal extends React.Component {
 constructor(props){
@@ -23,20 +25,6 @@ componentDidUpdate(prevProps, prevState){
     }
 }
 
-/*     onChangeHandler = (type) => (event)=>{
-        console.log(type);
-        this['set'+type]();
-    };
-
-    setInput = ()=>{
-console.log('setInput');
-    };
-
-    setTextArea = ()=>{
-        console.log('setTextArea');
-
-    }; */
-
     onChangeHandler = (type) => (event)=>{
         this.setState({
             [type] : event.target.value
@@ -51,7 +39,7 @@ console.log('setInput');
             date, 
             description
         };
-        this.props.onAddTask(taskData);
+        this.props.addTask(taskData);
     }
 
     editTask = ()=>{
@@ -152,9 +140,16 @@ AddEditModal.propTypes = {
     type: PropTypes.string.isRequired,
     open: PropTypes.bool.isRequired,
     onHide: PropTypes.func.isRequired,
-    onAddTask: PropTypes.func,
+    addTask: PropTypes.func,
     onEditTask: PropTypes.func
 };
 
 
-export default AddEditModal;
+/* const mapDispatchToProps = {
+
+} */
+
+export default connect(null, {
+    addTask
+})
+(AddEditModal);

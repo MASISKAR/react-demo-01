@@ -36,35 +36,12 @@ componentDidUpdate(prevProps){
     if(prevProps.location.search !== searchStr){
         this.props.getTasks(searchStr);
     } 
+
+    if(!prevProps.addTaskSuccess && this.props.addTaskSuccess){
+        this.setState({showAddTaskModal: false});
+    }
 }
 
-    addTask = (taskData) => {
-        fetch(`http://localhost:3001/tasks`, {
-            method: 'POST',
-            body: JSON.stringify(taskData),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(res => res.json())
-            .then(response => {
-                if(response.error){
-                    throw response.error;
-                }
-                this.props.enqueueSnackbar('Task added successfully', { 
-                    variant: 'success',
-                });
-                this.setState({
-                    tasks: [...this.state.tasks, response],
-                    showAddTaskModal: false
-                });
-            })
-            .catch(error => {
-                this.props.enqueueSnackbar(error.toString(), { 
-                    variant: 'error',
-                });
-            });
-    }
 
     removeButtonHandler = (taskId) => () => {
         fetch(`http://localhost:3001/tasks/${taskId}`, {
@@ -369,14 +346,12 @@ componentDidUpdate(prevProps){
                     type = 'add'
                     open={this.state.showAddTaskModal}
                     onHide={this.toggleTaskModal('Add')}
-                    onAddTask={this.addTask}
                 />
                 <Modal
                     type = 'edit'
                     data = {tasks[this.state.editTaskIndex]}
                     open={this.state.showEditTaskModal}
                     onHide={this.toggleTaskModal('Edit')}
-                    onAddTask={this.addTask}
                     onEditTask = {this.editTask}
                 />
      
@@ -387,7 +362,8 @@ componentDidUpdate(prevProps){
 
 const mapStateToProps = (state)=> {
    return {
-       tasks: state.taskReducer.tasks
+       tasks: state.taskReducer.tasks,
+       addTaskSuccess: state.taskReducer.addTaskSuccess
    }
 }
 
