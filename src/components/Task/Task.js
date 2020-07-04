@@ -1,52 +1,100 @@
-import React  from 'react';
-import classes from './task.css';
+import React from 'react';
+import { Card, Button} from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTrashAlt, faEdit} from '@fortawesome/free-solid-svg-icons';
+import EditTask from '../EditTask';
+import {formatDate} from '../../helpers/utils';
+import classes from './style.module.css';
+import {Link} from 'react-router-dom';
 
-export default class Task extends React.Component{
-    constructor(props){
-        super(props);
-        console.log('Task constructor');
+export default class Task extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    // console.log('Task constructor');
+    this.state = {
+      isEdit: false
     }
+  }
 
 
-    componentDidMount(){
-        console.log('Task mounted');
-      }
+  componentDidMount() {
+    // console.log('Task mounted');
+  }
 
-      componentDidUpdate(prevProps, prevState){
-        console.log('Task updated');
-        // console.log('prevProps', prevProps);
-        // console.log('this.props', this.props);
-      }
+/*   componentDidUpdate(prevProps, prevState) {
+    // console.log('Task updated');
+    // console.log('prevProps', prevProps);
+    // console.log('this.props', this.props);
+  } */
 
-      shouldComponentUpdate(prevProps, prevState){
-       return prevProps.text !== this.props.text;
-       
-      }
+  /*       shouldComponentUpdate(prevProps, prevState){
+        return prevProps.text !== this.props.text;
+        
+       } */
 
-      componentWillUnmount(){
-        console.log('Task unmounted');
-      }
+ /*  componentWillUnmount() {
+    console.log('Task unmounted');
+  } */
 
-   render(){
-    console.log('Task render');
-    const {text} = this.props;
-    
-    const spanStyle = {
-        fontSize: '20px',
-        color: 'maroon'
-    };
-    
-        return (
-            <div className = {classes.taskBlock}>
-            <input 
+  render() {
+    // console.log('Task render');
+    const { data } = this.props;
+    const { isEdit } = this.state;
+
+    return (
+      <Card>
+        <Card.Header>
+          <input
             type="checkbox"
-            onChange = {this.props.onCheck}
-            />
-            <span 
-            style = {spanStyle}
-            >{text} </span>
-        <button onClick={this.props.onDelete}>X</button>
-        </div>
-        );
-   }
+            checked={this.props.isSelected}
+            onChange={this.props.onCheck}
+          />
+        </Card.Header>
+        <Card.Body>
+          <Card.Title>{data.title}</Card.Title>
+          <Card.Text >
+            {data.description}
+          </Card.Text>
+          <Card.Text className={classes.date}>
+          Creation date {formatDate(data.created_at)}
+        </Card.Text>
+        <Card.Text className={classes.date}>
+        Completion date {formatDate(data.date)}
+      </Card.Text>
+          {
+            isEdit ?
+            <EditTask
+            text = {this.props.text}
+            onCancelEdit = {this.cancelEdit}
+            onSaveEdit = {this.saveEdit}
+            />           
+            :
+              <>
+                <FontAwesomeIcon icon={faEdit} onClick={()=>this.props.onEdit(data.id)} />
+                <FontAwesomeIcon icon={faTrashAlt} onClick={this.props.onDelete} />
+                <p>
+                <Button 
+                variant="primary" 
+                onClick = {this.props.onOpenModal}
+                >
+                Open in modal
+                </Button>
+
+                <Link to={`/task/${data.id}`}>
+                <Button 
+                variant="primary"
+                >
+                Open in separate page
+                </Button>
+                </Link>
+
+                </p>
+              </>
+          }
+
+
+        </Card.Body>
+      </Card>
+    );
+  }
 }

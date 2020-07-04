@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Text from './Text';
+import Button from 'react-bootstrap/Button';
 
 
 class Input extends Component {
@@ -36,12 +37,12 @@ buttonClickHandler = () => {
                     value={this.state.inputText}
                     onChange={this.inputChangeHandler}
                 />
-                <button
+{/*                 <button
                     onClick={this.buttonClickHandler}
                 >
                     Click me
-            </button>
-
+            </button> */}
+            <Button variant="primary">Primary</Button>
                 <Text text={this.state.text} />
 
             </div>

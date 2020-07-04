@@ -1,30 +1,41 @@
 import React from 'react';
-// import logo from './logo.svg';
-import classes from './App.css';
-// import Person from './components/Person';
-// import greet, {idGen as idGenerator, Hello, getThis} from './tools';
-// import * as newObj from './tools';
-import ToDo from './components/ToDo';
-// import Counter from './components/Counter';
-// import Animal from './components/Animal';
-// import Input from './components/Input';
-// newObj.getThis();
-// getThis();
-import Div from './components/HOC/Div';
-
-
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './App.css';
+// import Request from './Demo/Request';
+import NavMenu from './components/NavMenu/NavMenu';
+import ToDo from './components/containers/ToDo/ToDo';
+import About from './components/containers/About/About';
+import Contact from './components/containers/Contact/Contact';
+import SingleTask from './components/containers/SingleTask/SingleTask';
+import NotFound from './components/containers/NotFound/NotFound';
+import { withSnackbar } from 'notistack';
+import {connect} from 'react-redux';
+import {Route, Switch, Redirect} from 'react-router-dom';
+import Loader from './components/loader/loader';
 
 class App extends React.Component{
   constructor(props){
     super(props);
-    console.log('App constructor');
     this.state = {
       counter: 0
     };
 }
 
-componentDidMount(){
-  console.log('App mounted');
+ componentDidUpdate(prevProps){
+  if(!prevProps.success && this.props.success){
+    this.props.enqueueSnackbar(this.props.success, { 
+      variant: 'success',
+  });
+  return;
+  }
+
+  if(!prevProps.error && this.props.error){
+    this.props.enqueueSnackbar(this.props.error, { 
+      variant: 'error',
+  });
+  return;
+  }
+
 }
 
 
@@ -35,25 +46,22 @@ handleClick = ()=>{
 }
 
   render(){
-console.log('App render starts');
+// console.log('App render starts', this.props);
 
   return (
     <div className={'App'}>
+    <NavMenu/>   
 
-<button
-onClick = {this.handleClick}
->
-Click me and see the magic!</button>
+    <Switch>
+    <Route path='/' exact component={ToDo}/>
+    <Route path='/about' exact component={About}/>
+    <Route path='/contact' exact component={Contact}/>
+    <Route path='/task/:id' exact component={SingleTask}/>
+    <Route path='/404' exact component={NotFound}/>
+    <Redirect to='/404' />
+    </Switch>
 
-<Div text='hello' className={classes['color-red']}>
-<span >span text</span>
-
- <p>Lorem ipsum dolor sit amet.</p>
- <a href="/">Click me</a>
-</Div>
-
-<ToDo/>
-
+    {this.props.loading && <Loader/>}
     </div>
   );
 
@@ -61,6 +69,13 @@ Click me and see the magic!</button>
 
 }
 
-export default App;
+
+export default connect((state)=>{
+ return {
+    error: state.taskReducer.error,
+    success: state.taskReducer.success,
+    loading:  state.taskReducer.loading
+    }
+})(withSnackbar(App));
 
 

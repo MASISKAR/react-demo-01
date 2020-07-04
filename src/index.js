@@ -1,40 +1,31 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import App from './App';
-// import greeting, {idGen as func, hello} from './tools';
-// import * as tools from './tools';
-
+import { SnackbarProvider } from 'notistack';
 import * as serviceWorker from './serviceWorker';
+import { BrowserRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import {store} from './store';
 
 
-// console.log('tools', tools.hello());
-
-
-// console.log(func());
-// console.log(hello());
-// console.log(greeting);
-
-// const user = {
-//   name: 'John',
-//   age: 20
-// };
-
-// let {name, age} = user;
-
-
-
-/* ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-); */
 
 ReactDOM.render(
-    <App />,
+  <React.StrictMode>
+  <Provider store = {store}>
+  <BrowserRouter>
+      <SnackbarProvider maxSnack={2}>
+        <App />
+      </SnackbarProvider>
+    </BrowserRouter>
+  </Provider>
+  </React.StrictMode>,
   document.getElementById('root')
 );
+
+/* ReactDOM.render(
+    <App />,
+  document.getElementById('root')
+); */
 
 
 
